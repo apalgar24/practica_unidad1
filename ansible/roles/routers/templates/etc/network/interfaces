@@ -1,0 +1,27 @@
+source-directory /etc/network/interfaces.d
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet dhcp
+
+auto {{ interfaz_nat }}
+iface {{ interfaz_nat }} inet dhcp
+
+auto {{ interfaz_red1 }}
+iface {{ interfaz_red1 }} inet static
+      address {{ ip_router_red1 }}
+      netmask {{ mascara_red }}
+      
+
+
+
+#RED 1
+up iptables -t nat -A POSTROUTING -s {{ ip_red1_iptables }} -o {{ interfaz_nat }} -j MASQUERADE
+down iptables -t nat -D POSTROUTING -s {{ ip_red1_iptables }} -o {{ interfaz_nat }} -j MASQUERADE
+
+up iptables -t nat -A PREROUTING -p tcp --dport 80 -i {{ interfaz_nat }} -j DNAT --to  {{ ip_webserver }}
+down iptables -t nat -D PREROUTING -p tcp --dport 80 -i {{ interfaz_nat }} -j DNAT --to  {{ ip_webserver }}

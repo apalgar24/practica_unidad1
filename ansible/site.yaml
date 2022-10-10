@@ -1,0 +1,29 @@
+
+- hosts: routers
+  become: true
+  roles:
+   - role: routers
+
+- hosts: clientes
+  become: true
+  roles:
+   - role: clientes
+
+
+
+- hosts: all
+  become: true
+  roles:
+    - role: commons
+
+
+- hosts: clientex
+  become: true
+  roles:
+   - role: apache2
+
+
+
+
+
+
